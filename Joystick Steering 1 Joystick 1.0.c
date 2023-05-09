@@ -49,6 +49,7 @@ float lerp(float begin, float end, float weight)
 	return begin + (end - begin) * weight;
 }
 
+/* OLD METHOD (smoother but IMPOSSIBLE to time :c)
 void transition(float begin, float end, float scale, bool left)
 {
 	float speed = begin;
@@ -62,7 +63,38 @@ void transition(float begin, float end, float scale, bool left)
 		{
 			motor[rightFrontMotor] = speed;
 		}
-		speed = lerp(speed, end, scale);
+		speed = lerp(speed, end, scale * delta);
+	}
+
+	if (left == true)
+	{
+		motor[leftFrontMotor] = end;
+	}
+	else
+	{
+		motor[rightFrontMotor] = end;
+	}
+
+	return;
+}
+*/
+
+void transition(float begin, float end, int transTime, bool left) //Time in millisecs?
+{
+	float speed = begin;
+	int curTime = 0;
+	while (abs(speed - end) > 2.0)
+	{
+		if (left == true)
+		{
+			motor[leftFrontMotor] = speed;
+		}
+		else
+		{
+			motor[rightFrontMotor] = speed;
+		}
+		speed = lerp(speed, end, curTime / transTime);
+		curTime += delta;
 	}
 
 	if (left == true)
@@ -77,7 +109,6 @@ void transition(float begin, float end, float scale, bool left)
 	return;
 }
 
-
 task main()
 {
 	while(1 == 1)
@@ -90,25 +121,31 @@ task main()
 		{
 		mainLoop = false; //Start Autonomous for Blue
 
+		transition(0, 127.0, 2000, true); //true = left, false = right
+		transition(0, 127.0, 2000, false);
 		motor[rightFrontMotor] = 127;
 		motor[leftFrontMotor] = 127;
 		delay(3000);
 
 
-		motor[leftFrontMotor] = -127; //Turn Left
-		delay(500);
-		transition(127.0, -127.0, 0.01, true);
-		transition(127.0, -127.0, 0.01, false);
-
-		motor[leftFrontMotor] = 127; //Straight
-		delay(500);
-
+		transition(127.0, -127.0, 800, true);
 		motor[leftFrontMotor] = -127; //Turn Left
 		delay(500);
 
+		transition(-127.0, 127.0, 800, true);
 		motor[leftFrontMotor] = 127; //Straight
 		delay(500);
 
+		transition(127.0, -127.0, 800, true);
+		motor[leftFrontMotor] = -127; //Turn Left
+		delay(500);
+
+		transition(-127.0, 127.0, 800, true);
+		motor[leftFrontMotor] = 127; //Straight
+		delay(500);
+
+		transition(127.0, 0.0, 1000, true);
+		transition(127.0, 0.0, 1000, false);
 		motor[rightFrontMotor] = 0; //Stop
 		motor[leftFrontMotor] = 0;
 
