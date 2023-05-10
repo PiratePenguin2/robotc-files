@@ -79,7 +79,7 @@ void transition(float begin, float end, float scale, bool left)
 }
 */
 
-void transition(float begin, float end, int transTime, bool left) //Time in millisecs?
+void transition(float begin, float end, int transTime, bool left, bool right, bool revL, bool revR) //Time in millisecs?
 {
 	float speed = begin;
 	int curTime = 0;
@@ -87,23 +87,51 @@ void transition(float begin, float end, int transTime, bool left) //Time in mill
 	{
 		if (left == true)
 		{
-			motor[leftFrontMotor] = speed;
+			if (revL == true)
+			{
+				motor[leftFrontMotor] = -speed;
+			}
+			else
+			{
+				motor[leftFrontMotor] = speed;
+			}
 		}
-		else
+		if (right == true)
 		{
-			motor[rightFrontMotor] = speed;
+			if (revR == true)
+			{
+				motor[rightFrontMotor] = -speed;
+			}
+			else
+			{
+				motor[rightFrontMotor] = speed;
+			}
 		}
-		speed = lerp(speed, end, curTime / transTime);
-		curTime += delta;
+		speed = lerp(begin, end, (curTime / transTime));
+		curTime += 1;
 	}
 
 	if (left == true)
 	{
-		motor[leftFrontMotor] = end;
+		if (revL == true)
+		{
+			motor[leftFrontMotor] = -end;
+		}
+		else
+		{
+			motor[leftFrontMotor] = end;
+		}
 	}
-	else
+	if (right == true)
 	{
-		motor[rightFrontMotor] = end;
+		if (revR == true)
+		{
+			motor[rightFrontMotor] = -end;
+		}
+		else
+		{
+			motor[rightFrontMotor] = end;
+		}
 	}
 
 	return;
@@ -121,33 +149,11 @@ task main()
 		{
 		mainLoop = false; //Start Autonomous for Blue
 
-		transition(0, 127.0, 2000, true); //true = left, false = right
-		transition(0, 127.0, 2000, false);
-		motor[rightFrontMotor] = 127;
-		motor[leftFrontMotor] = 127;
-		delay(3000);
+		transition(0.0, 127.0, 1000, true, true, false, false); //both forward!
+		transition(127.0, 0.0, 1000, true, true, false, false);  //STOP!!
 
-
-		transition(127.0, -127.0, 800, true);
-		motor[leftFrontMotor] = -127; //Turn Left
-		delay(500);
-
-		transition(-127.0, 127.0, 800, true);
-		motor[leftFrontMotor] = 127; //Straight
-		delay(500);
-
-		transition(127.0, -127.0, 800, true);
-		motor[leftFrontMotor] = -127; //Turn Left
-		delay(500);
-
-		transition(-127.0, 127.0, 800, true);
-		motor[leftFrontMotor] = 127; //Straight
-		delay(500);
-
-		transition(127.0, 0.0, 1000, true);
-		transition(127.0, 0.0, 1000, false);
-		motor[rightFrontMotor] = 0; //Stop
-		motor[leftFrontMotor] = 0;
+		transition(0.0, 127.0, 5000, true, true, true, false);   //TURN LEFT!!
+		transition(127.0, 0.0, 5000, true, true, true, false);   //stop!
 
 		mainLoop = true; //Reset autostart variable
 		}
