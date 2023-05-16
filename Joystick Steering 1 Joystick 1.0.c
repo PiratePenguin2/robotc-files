@@ -147,43 +147,32 @@ task main()
 		//-----Blue Autonomous
 		if (vexRT[Btn7L] == 1)
 		{
-		mainLoop = false; //Start Autonomous for Blue
+			mainLoop = false; //Start Autonomous for Blue
 
-		transition(0.0, 127.0, 1000, true, true, false, false); //both forward!
-		transition(127.0, 0.0, 1000, true, true, false, false);  //STOP!!
+			motor[rightFrontMotor] = 127;
+			motor[leftFrontMotor] = 127;
+			delay(5000);
 
-		transition(0.0, 127.0, 5000, true, true, true, false);   //TURN LEFT!!
-		transition(127.0, 0.0, 5000, true, true, true, false);   //stop!
+			motor[rightFrontMotor] = 0; //Stop
+			motor[leftFrontMotor] = 0;
 
-		mainLoop = true; //Reset autostart variable
+			mainLoop = true; //Reset autostart variable
 		}
 
 
 		//-----Red Autonomous-----
 		if (vexRT[Btn7R] == 1)
 		{
-		mainLoop = false; //Start Autonomous for Blue
+			mainLoop = false; //Start Autonomous for Blue
 
-		motor[rightFrontMotor] = 127;
-		motor[leftFrontMotor] = 127;
-		delay(3000);
+			motor[rightFrontMotor] = 127;
+			motor[leftFrontMotor] = 127;
+			delay(5000);
 
-		motor[rightFrontMotor] = -127; //Turn Right
-		delay(500);
+			motor[rightFrontMotor] = 0; //Stop
+			motor[leftFrontMotor] = 0;
 
-		motor[rightFrontMotor] = 127; //Straight
-		delay(500);
-
-		motor[rightFrontMotor] = -127; //Turn Right
-		delay(500);
-
-		motor[rightFrontMotor] = 127; //Straight
-		delay(500);
-
-		motor[rightFrontMotor] = 0; //Stop
-		motor[leftFrontMotor] = 0;
-
-		mainLoop = true; //Reset autostart variable
+			mainLoop = true; //Reset autostart variable
 		}
 
 
